@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api.js';
-import { Button, Input, Field, Modal, Spinner, EmptyState, Table } from './ui.jsx';
+import { Button, Input, Field, Modal, Spinner, EmptyState, Card, Table } from './ui.jsx';
+import { Icon } from './icons.jsx';
 
 const EMPTY = { nom: '', prenom: '', email: '', telephone: '' };
 
@@ -83,39 +84,39 @@ export default function Lecteurs({ notify }) {
   }
 
   return (
-    <section>
-      <div className="mb-4 flex justify-end">
-        <Button onClick={openCreate}>+ Ajouter un lecteur</Button>
+    <div className="space-y-5">
+      <div className="flex justify-end">
+        <Button onClick={openCreate}>
+          <Icon.Plus size={16} /> Ajouter un lecteur
+        </Button>
       </div>
 
-      {loading ? (
-        <Spinner />
-      ) : lecteurs.length === 0 ? (
-        <EmptyState>Aucun lecteur.</EmptyState>
-      ) : (
-        <Table columns={COLUMNS}>
-          {lecteurs.map((l) => (
-            <tr key={l.id} className="hover:bg-slate-50">
-              <td className="px-4 py-3 font-medium">{l.nom}</td>
-              <td className="px-4 py-3 text-slate-600">{l.prenom}</td>
-              <td className="px-4 py-3 text-slate-600">{l.email}</td>
-              <td className="px-4 py-3 text-slate-600">{l.telephone}</td>
-              <td className="whitespace-nowrap px-4 py-3 text-right">
-                <Button variant="ghost" onClick={() => openEdit(l)}>
-                  Modifier
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="text-rose-600 hover:text-rose-700"
-                  onClick={() => remove(l)}
-                >
-                  Supprimer
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </Table>
-      )}
+      <Card>
+        {loading ? (
+          <Spinner />
+        ) : lecteurs.length === 0 ? (
+          <EmptyState>Aucun lecteur inscrit. Ajoutez votre premier lecteur.</EmptyState>
+        ) : (
+          <Table columns={COLUMNS}>
+            {lecteurs.map((l) => (
+              <tr key={l.id} className="transition-colors hover:bg-paper/50">
+                <td className="px-5 py-3.5 font-medium">{l.nom}</td>
+                <td className="px-5 py-3.5 text-muted">{l.prenom}</td>
+                <td className="px-5 py-3.5 text-muted">{l.email}</td>
+                <td className="px-5 py-3.5 tabular-nums text-muted">{l.telephone}</td>
+                <td className="whitespace-nowrap px-5 py-3.5 text-right">
+                  <Button variant="ghost" onClick={() => openEdit(l)}>
+                    Modifier
+                  </Button>
+                  <Button variant="ghost" className="text-rose-600 hover:bg-rose-50 hover:text-rose-700" onClick={() => remove(l)}>
+                    Supprimer
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </Table>
+        )}
+      </Card>
 
       <Modal
         open={!!modal}
@@ -128,11 +129,7 @@ export default function Lecteurs({ notify }) {
               <Input required value={form.nom} onChange={(e) => setForm({ ...form, nom: e.target.value })} />
             </Field>
             <Field label="Prénom">
-              <Input
-                required
-                value={form.prenom}
-                onChange={(e) => setForm({ ...form, prenom: e.target.value })}
-              />
+              <Input required value={form.prenom} onChange={(e) => setForm({ ...form, prenom: e.target.value })} />
             </Field>
           </div>
           <Field label="Email">
@@ -144,11 +141,7 @@ export default function Lecteurs({ notify }) {
             />
           </Field>
           <Field label="Téléphone">
-            <Input
-              required
-              value={form.telephone}
-              onChange={(e) => setForm({ ...form, telephone: e.target.value })}
-            />
+            <Input required value={form.telephone} onChange={(e) => setForm({ ...form, telephone: e.target.value })} />
           </Field>
           <div className="flex justify-end gap-2 pt-2">
             <Button variant="secondary" type="button" onClick={() => setModal(null)}>
@@ -160,6 +153,6 @@ export default function Lecteurs({ notify }) {
           </div>
         </form>
       </Modal>
-    </section>
+    </div>
   );
 }

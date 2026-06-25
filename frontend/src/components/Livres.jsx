@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api.js';
-import { Button, Input, Field, Modal, Spinner, EmptyState, Table } from './ui.jsx';
+import { Button, Input, Field, Modal, Spinner, EmptyState, Card, Table } from './ui.jsx';
+import { Icon } from './icons.jsx';
 
 const EMPTY = { titre: '', auteur: '', categorie: '', annee_publication: '', exemplaires_disponibles: '' };
 
@@ -92,21 +93,26 @@ export default function Livres({ notify }) {
   }
 
   return (
-    <section>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <div className="space-y-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <form
           onSubmit={(e) => {
             e.preventDefault();
             load(search.trim() || undefined);
           }}
-          className="flex gap-2"
+          className="flex items-center gap-2"
         >
-          <Input
-            placeholder="Filtrer par catégorie…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-56"
-          />
+          <div className="relative">
+            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted">
+              <Icon.Search size={16} />
+            </span>
+            <Input
+              placeholder="Filtrer par catégorie…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-64 pl-9"
+            />
+          </div>
           <Button variant="secondary" type="submit">
             Rechercher
           </Button>
@@ -123,42 +129,42 @@ export default function Livres({ notify }) {
             </Button>
           )}
         </form>
-        <Button onClick={openCreate}>+ Ajouter un livre</Button>
+        <Button onClick={openCreate}>
+          <Icon.Plus size={16} /> Ajouter un livre
+        </Button>
       </div>
 
-      {loading ? (
-        <Spinner />
-      ) : livres.length === 0 ? (
-        <EmptyState>Aucun livre.</EmptyState>
-      ) : (
-        <Table columns={COLUMNS}>
-          {livres.map((l) => (
-            <tr key={l.id} className="hover:bg-slate-50">
-              <td className="px-4 py-3 font-medium">{l.titre}</td>
-              <td className="px-4 py-3 text-slate-600">{l.auteur}</td>
-              <td className="px-4 py-3 text-slate-600">{l.categorie}</td>
-              <td className="px-4 py-3 text-slate-600">{l.annee_publication}</td>
-              <td className="px-4 py-3">
-                <span className={l.exemplaires_disponibles === 0 ? 'font-medium text-rose-600' : ''}>
-                  {l.exemplaires_disponibles}
-                </span>
-              </td>
-              <td className="whitespace-nowrap px-4 py-3 text-right">
-                <Button variant="ghost" onClick={() => openEdit(l)}>
-                  Modifier
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="text-rose-600 hover:text-rose-700"
-                  onClick={() => remove(l)}
-                >
-                  Supprimer
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </Table>
-      )}
+      <Card bodyClassName="">
+        {loading ? (
+          <Spinner />
+        ) : livres.length === 0 ? (
+          <EmptyState>Aucun ouvrage au catalogue. Ajoutez votre premier livre.</EmptyState>
+        ) : (
+          <Table columns={COLUMNS}>
+            {livres.map((l) => (
+              <tr key={l.id} className="transition-colors hover:bg-paper/50">
+                <td className="px-5 py-3.5 font-medium">{l.titre}</td>
+                <td className="px-5 py-3.5 text-muted">{l.auteur}</td>
+                <td className="px-5 py-3.5 text-muted">{l.categorie}</td>
+                <td className="px-5 py-3.5 tabular-nums text-muted">{l.annee_publication}</td>
+                <td className="px-5 py-3.5">
+                  <span className={l.exemplaires_disponibles === 0 ? 'font-semibold text-rose-600' : 'tabular-nums'}>
+                    {l.exemplaires_disponibles === 0 ? 'Épuisé' : l.exemplaires_disponibles}
+                  </span>
+                </td>
+                <td className="whitespace-nowrap px-5 py-3.5 text-right">
+                  <Button variant="ghost" onClick={() => openEdit(l)}>
+                    Modifier
+                  </Button>
+                  <Button variant="ghost" className="text-rose-600 hover:bg-rose-50 hover:text-rose-700" onClick={() => remove(l)}>
+                    Supprimer
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </Table>
+        )}
+      </Card>
 
       <Modal
         open={!!modal}
@@ -173,11 +179,7 @@ export default function Livres({ notify }) {
             <Input required value={form.auteur} onChange={(e) => setForm({ ...form, auteur: e.target.value })} />
           </Field>
           <Field label="Catégorie">
-            <Input
-              required
-              value={form.categorie}
-              onChange={(e) => setForm({ ...form, categorie: e.target.value })}
-            />
+            <Input required value={form.categorie} onChange={(e) => setForm({ ...form, categorie: e.target.value })} />
           </Field>
           <div className="grid grid-cols-2 gap-3">
             <Field label="Année de publication">
@@ -208,6 +210,6 @@ export default function Livres({ notify }) {
           </div>
         </form>
       </Modal>
-    </section>
+    </div>
   );
 }

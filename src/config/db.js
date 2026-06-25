@@ -47,10 +47,16 @@ const SCHEMA = [
 let schemaPromise;
 export function ensureSchema() {
   if (!schemaPromise) {
-    schemaPromise = db.batch(SCHEMA, 'write').catch((err) => {
-      schemaPromise = undefined; // permet une nouvelle tentative au prochain appel
-      throw err;
-    });
+    // PRAGMA hors transaction (impossible dans un batch) : active le respect des
+    // cles etrangeres (ON DELETE CASCADE) pour la base fichier locale.
+    // Turso active deja les foreign keys par defaut cote serveur.
+    schemaPromise = db
+      .execute('PRAGMA foreign_keys = ON')
+      .then(() => db.batch(SCHEMA, 'write'))
+      .catch((err) => {
+        schemaPromise = undefined; // permet une nouvelle tentative au prochain appel
+        throw err;
+      });
   }
   return schemaPromise;
 }

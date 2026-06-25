@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api.js';
-import { Button, Select, Field, Input, Modal, Spinner, EmptyState, Badge, Table } from './ui.jsx';
+import { Button, Select, Field, Input, Modal, Spinner, EmptyState, Badge, Card, Table } from './ui.jsx';
+import { Icon } from './icons.jsx';
+
+const todayISO = () => new Date().toISOString().slice(0, 10);
 
 const COLUMNS = [
   { key: 'id', label: '#' },
@@ -77,45 +80,58 @@ export default function Emprunts({ notify }) {
     }
   }
 
+  const today = todayISO();
+
   return (
-    <section>
-      <div className="mb-4 flex justify-end">
-        <Button onClick={openCreate}>+ Nouvel emprunt</Button>
+    <div className="space-y-5">
+      <div className="flex justify-end">
+        <Button onClick={openCreate}>
+          <Icon.Plus size={16} /> Nouvel emprunt
+        </Button>
       </div>
 
-      {loading ? (
-        <Spinner />
-      ) : emprunts.length === 0 ? (
-        <EmptyState>Aucun emprunt.</EmptyState>
-      ) : (
-        <Table columns={COLUMNS}>
-          {emprunts.map((e) => (
-            <tr key={e.id} className="hover:bg-slate-50">
-              <td className="px-4 py-3 text-slate-400">{e.id}</td>
-              <td className="px-4 py-3 font-medium">{e.titre}</td>
-              <td className="px-4 py-3 text-slate-600">
-                {e.prenom} {e.nom}
-              </td>
-              <td className="px-4 py-3 text-slate-600">{e.date_emprunt}</td>
-              <td className="px-4 py-3 text-slate-600">{e.date_retour_prevue}</td>
-              <td className="px-4 py-3">
-                {e.statut === 'retourne' ? (
-                  <Badge color="green">Retourné</Badge>
-                ) : (
-                  <Badge color="amber">En cours</Badge>
-                )}
-              </td>
-              <td className="px-4 py-3 text-right">
-                {e.statut === 'en_cours' && (
-                  <Button variant="secondary" onClick={() => retour(e)}>
-                    Marquer retourné
-                  </Button>
-                )}
-              </td>
-            </tr>
-          ))}
-        </Table>
-      )}
+      <Card>
+        {loading ? (
+          <Spinner />
+        ) : emprunts.length === 0 ? (
+          <EmptyState>Aucun emprunt enregistré. Créez un emprunt pour démarrer.</EmptyState>
+        ) : (
+          <Table columns={COLUMNS}>
+            {emprunts.map((e) => {
+              const retard = e.statut === 'en_cours' && e.date_retour_prevue < today;
+              return (
+                <tr key={e.id} className="transition-colors hover:bg-paper/50">
+                  <td className="px-5 py-3.5 tabular-nums text-muted">{e.id}</td>
+                  <td className="px-5 py-3.5 font-medium">{e.titre}</td>
+                  <td className="px-5 py-3.5 text-muted">
+                    {e.prenom} {e.nom}
+                  </td>
+                  <td className="px-5 py-3.5 tabular-nums text-muted">{e.date_emprunt}</td>
+                  <td className={`px-5 py-3.5 tabular-nums ${retard ? 'font-medium text-rose-600' : 'text-muted'}`}>
+                    {e.date_retour_prevue}
+                  </td>
+                  <td className="px-5 py-3.5">
+                    {e.statut === 'retourne' ? (
+                      <Badge color="green">Retourné</Badge>
+                    ) : retard ? (
+                      <Badge color="red">En retard</Badge>
+                    ) : (
+                      <Badge color="amber">En cours</Badge>
+                    )}
+                  </td>
+                  <td className="px-5 py-3.5 text-right">
+                    {e.statut === 'en_cours' && (
+                      <Button variant="secondary" onClick={() => retour(e)}>
+                        Marquer retourné
+                      </Button>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </Table>
+        )}
+      </Card>
 
       <Modal open={modal} title="Nouvel emprunt" onClose={() => setModal(false)}>
         <form onSubmit={save} className="space-y-3">
@@ -143,9 +159,7 @@ export default function Emprunts({ notify }) {
               {livres.map((l) => (
                 <option key={l.id} value={l.id} disabled={l.exemplaires_disponibles === 0}>
                   {l.titre}{' '}
-                  {l.exemplaires_disponibles === 0
-                    ? '(épuisé)'
-                    : `(${l.exemplaires_disponibles} dispo)`}
+                  {l.exemplaires_disponibles === 0 ? '(épuisé)' : `(${l.exemplaires_disponibles} dispo)`}
                 </option>
               ))}
             </Select>
@@ -154,6 +168,7 @@ export default function Emprunts({ notify }) {
             <Input
               required
               type="date"
+              min={today}
               value={form.date_retour_prevue}
               onChange={(e) => setForm({ ...form, date_retour_prevue: e.target.value })}
             />
@@ -168,6 +183,6 @@ export default function Emprunts({ notify }) {
           </div>
         </form>
       </Modal>
-    </section>
+    </div>
   );
 }

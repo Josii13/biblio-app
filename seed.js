@@ -37,10 +37,19 @@ await db.batch(
 );
 
 // Un emprunt de demo + decrement de stock, de facon atomique.
+// On reference les vrais ids inseres (et non 1) : les ids derivent apres plusieurs seeds.
+const livreId = (await db.execute('SELECT id FROM livres ORDER BY id LIMIT 1')).rows[0].id;
+const lecteurId = (await db.execute('SELECT id FROM lecteurs ORDER BY id LIMIT 1')).rows[0].id;
 await db.batch(
   [
-    'UPDATE livres SET exemplaires_disponibles = exemplaires_disponibles - 1 WHERE id = 1',
-    "INSERT INTO emprunts (lecteur_id,livre_id,date_retour_prevue) VALUES (1,1,date('now','+14 days'))",
+    {
+      sql: 'UPDATE livres SET exemplaires_disponibles = exemplaires_disponibles - 1 WHERE id = ?',
+      args: [livreId],
+    },
+    {
+      sql: "INSERT INTO emprunts (lecteur_id,livre_id,date_retour_prevue) VALUES (?,?,date('now','+14 days'))",
+      args: [lecteurId, livreId],
+    },
   ],
   'write'
 );

@@ -1,1 +1,40 @@
 @import "tailwindcss";
+
+/* Identité « salle de lecture » : encre verte, papier chaud, accent laiton. */
+@theme {
+  --color-paper: #f4f1e9;
+  --color-surface: #ffffff;
+  --color-ink: #1c2520;
+  --color-muted: #5c6660;
+  --color-line: #e5e0d4;
+  --color-sidebar: #16302b;
+  --color-sidebar-hover: #20413a;
+  --color-brass: #c0892d;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+  }
+  /* Cible de focus visible et cohérente partout */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brass;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
