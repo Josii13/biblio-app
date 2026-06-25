@@ -1,0 +1,100 @@
+{
+  "clientName": "Thunder Client",
+  "collectionName": "Biblio API",
+  "dateExported": "2026-06-21",
+  "version": "1.2",
+  "folders": [
+    { "_id": "f-livres", "name": "Livres", "sortNum": 10000 },
+    { "_id": "f-lecteurs", "name": "Lecteurs", "sortNum": 20000 },
+    { "_id": "f-emprunts", "name": "Emprunts", "sortNum": 30000 }
+  ],
+  "requests": [
+    {
+      "_id": "r1", "containerId": "f-livres", "name": "Créer un livre", "method": "POST",
+      "url": "{{base}}/api/livres", "sortNum": 10000,
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": { "type": "json", "raw": "{\n  \"titre\": \"Clean Code\",\n  \"auteur\": \"Robert C. Martin\",\n  \"categorie\": \"Informatique\",\n  \"annee_publication\": 2008,\n  \"exemplaires_disponibles\": 5\n}" }
+    },
+    {
+      "_id": "r2", "containerId": "f-livres", "name": "Lister tous les livres", "method": "GET",
+      "url": "{{base}}/api/livres", "sortNum": 11000
+    },
+    {
+      "_id": "r3", "containerId": "f-livres", "name": "Rechercher par catégorie", "method": "GET",
+      "url": "{{base}}/api/livres?categorie=Informatique", "sortNum": 12000
+    },
+    {
+      "_id": "r4", "containerId": "f-livres", "name": "Afficher un livre", "method": "GET",
+      "url": "{{base}}/api/livres/1", "sortNum": 13000
+    },
+    {
+      "_id": "r5", "containerId": "f-livres", "name": "Modifier un livre", "method": "PUT",
+      "url": "{{base}}/api/livres/1", "sortNum": 14000,
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": { "type": "json", "raw": "{\n  \"titre\": \"Clean Code (2e éd.)\",\n  \"auteur\": \"Robert C. Martin\",\n  \"categorie\": \"Informatique\",\n  \"annee_publication\": 2008,\n  \"exemplaires_disponibles\": 3\n}" }
+    },
+    {
+      "_id": "r6", "containerId": "f-livres", "name": "Validation KO (422)", "method": "POST",
+      "url": "{{base}}/api/livres", "sortNum": 15000,
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": { "type": "json", "raw": "{\n  \"titre\": \"Sans année\",\n  \"auteur\": \"X\",\n  \"categorie\": \"Roman\"\n}" }
+    },
+    {
+      "_id": "r7", "containerId": "f-livres", "name": "Supprimer un livre", "method": "DELETE",
+      "url": "{{base}}/api/livres/5", "sortNum": 16000
+    },
+    {
+      "_id": "r10", "containerId": "f-lecteurs", "name": "Créer un lecteur", "method": "POST",
+      "url": "{{base}}/api/lecteurs", "sortNum": 20000,
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": { "type": "json", "raw": "{\n  \"nom\": \"Kouassi\",\n  \"prenom\": \"Ange\",\n  \"email\": \"ange.kouassi@mail.ci\",\n  \"telephone\": \"+2250700000001\"\n}" }
+    },
+    {
+      "_id": "r11", "containerId": "f-lecteurs", "name": "Lister tous les lecteurs", "method": "GET",
+      "url": "{{base}}/api/lecteurs", "sortNum": 21000
+    },
+    {
+      "_id": "r12", "containerId": "f-lecteurs", "name": "Afficher un lecteur", "method": "GET",
+      "url": "{{base}}/api/lecteurs/1", "sortNum": 22000
+    },
+    {
+      "_id": "r13", "containerId": "f-lecteurs", "name": "Modifier un lecteur", "method": "PUT",
+      "url": "{{base}}/api/lecteurs/1", "sortNum": 23000,
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": { "type": "json", "raw": "{\n  \"nom\": \"Kouassi\",\n  \"prenom\": \"Ange Marie\",\n  \"email\": \"ange.kouassi@mail.ci\",\n  \"telephone\": \"+2250700000099\"\n}" }
+    },
+    {
+      "_id": "r14", "containerId": "f-lecteurs", "name": "Email dupliqué (409)", "method": "POST",
+      "url": "{{base}}/api/lecteurs", "sortNum": 24000,
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": { "type": "json", "raw": "{\n  \"nom\": \"Autre\",\n  \"prenom\": \"Test\",\n  \"email\": \"ange.kouassi@mail.ci\",\n  \"telephone\": \"+2250700000002\"\n}" }
+    },
+    {
+      "_id": "r15", "containerId": "f-lecteurs", "name": "Supprimer un lecteur", "method": "DELETE",
+      "url": "{{base}}/api/lecteurs/3", "sortNum": 25000
+    },
+    {
+      "_id": "r20", "containerId": "f-emprunts", "name": "Créer un emprunt", "method": "POST",
+      "url": "{{base}}/api/emprunts", "sortNum": 30000,
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": { "type": "json", "raw": "{\n  \"lecteur_id\": 1,\n  \"livre_id\": 1,\n  \"date_retour_prevue\": \"2026-07-15\"\n}" }
+    },
+    {
+      "_id": "r21", "containerId": "f-emprunts", "name": "Lister tous les emprunts", "method": "GET",
+      "url": "{{base}}/api/emprunts", "sortNum": 31000
+    },
+    {
+      "_id": "r22", "containerId": "f-emprunts", "name": "Emprunts d'un lecteur", "method": "GET",
+      "url": "{{base}}/api/emprunts/lecteur/1", "sortNum": 32000
+    },
+    {
+      "_id": "r23", "containerId": "f-emprunts", "name": "Lecteurs ayant emprunté un livre", "method": "GET",
+      "url": "{{base}}/api/emprunts/livre/1/lecteurs", "sortNum": 33000
+    },
+    {
+      "_id": "r24", "containerId": "f-emprunts", "name": "Retourner un emprunt", "method": "PATCH",
+      "url": "{{base}}/api/emprunts/1/retour", "sortNum": 34000
+    }
+  ],
+  "settings": { "options": { "baseUrl": "http://localhost:3000" } }
+}

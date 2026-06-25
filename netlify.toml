@@ -1,0 +1,16 @@
+[build]
+  # Dossier statique servi a la racine (page de doc), API geree par les functions.
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+  # libSQL embarque un binaire natif : on le copie tel quel au lieu de le bundler.
+  external_node_modules = ["@libsql/client", "libsql"]
+
+# Toutes les requetes /api/* sont servies par la fonction `api` (Express),
+# en conservant le chemin d'origine (status 200 = rewrite interne).
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200

@@ -1,0 +1,42 @@
+{
+  "info": {
+    "name": "Biblio API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [{ "key": "base", "value": "http://localhost:3000" }],
+  "item": [
+    {
+      "name": "Livres",
+      "item": [
+        { "name": "Créer un livre", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "url": "{{base}}/api/livres", "body": { "mode": "raw", "raw": "{\n  \"titre\": \"Clean Code\",\n  \"auteur\": \"Robert C. Martin\",\n  \"categorie\": \"Informatique\",\n  \"annee_publication\": 2008,\n  \"exemplaires_disponibles\": 5\n}" } } },
+        { "name": "Lister tous les livres", "request": { "method": "GET", "url": "{{base}}/api/livres" } },
+        { "name": "Rechercher par catégorie", "request": { "method": "GET", "url": "{{base}}/api/livres?categorie=Informatique" } },
+        { "name": "Afficher un livre", "request": { "method": "GET", "url": "{{base}}/api/livres/1" } },
+        { "name": "Modifier un livre", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "url": "{{base}}/api/livres/1", "body": { "mode": "raw", "raw": "{\n  \"titre\": \"Clean Code (2e éd.)\",\n  \"auteur\": \"Robert C. Martin\",\n  \"categorie\": \"Informatique\",\n  \"annee_publication\": 2008,\n  \"exemplaires_disponibles\": 3\n}" } } },
+        { "name": "Validation KO (422)", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "url": "{{base}}/api/livres", "body": { "mode": "raw", "raw": "{\n  \"titre\": \"Sans année\",\n  \"auteur\": \"X\",\n  \"categorie\": \"Roman\"\n}" } } },
+        { "name": "Supprimer un livre", "request": { "method": "DELETE", "url": "{{base}}/api/livres/5" } }
+      ]
+    },
+    {
+      "name": "Lecteurs",
+      "item": [
+        { "name": "Créer un lecteur", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "url": "{{base}}/api/lecteurs", "body": { "mode": "raw", "raw": "{\n  \"nom\": \"Kouassi\",\n  \"prenom\": \"Ange\",\n  \"email\": \"ange.kouassi@mail.ci\",\n  \"telephone\": \"+2250700000001\"\n}" } } },
+        { "name": "Lister tous les lecteurs", "request": { "method": "GET", "url": "{{base}}/api/lecteurs" } },
+        { "name": "Afficher un lecteur", "request": { "method": "GET", "url": "{{base}}/api/lecteurs/1" } },
+        { "name": "Modifier un lecteur", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "url": "{{base}}/api/lecteurs/1", "body": { "mode": "raw", "raw": "{\n  \"nom\": \"Kouassi\",\n  \"prenom\": \"Ange Marie\",\n  \"email\": \"ange.kouassi@mail.ci\",\n  \"telephone\": \"+2250700000099\"\n}" } } },
+        { "name": "Email dupliqué (409)", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "url": "{{base}}/api/lecteurs", "body": { "mode": "raw", "raw": "{\n  \"nom\": \"Autre\",\n  \"prenom\": \"Test\",\n  \"email\": \"ange.kouassi@mail.ci\",\n  \"telephone\": \"+2250700000002\"\n}" } } },
+        { "name": "Supprimer un lecteur", "request": { "method": "DELETE", "url": "{{base}}/api/lecteurs/3" } }
+      ]
+    },
+    {
+      "name": "Emprunts",
+      "item": [
+        { "name": "Créer un emprunt", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "url": "{{base}}/api/emprunts", "body": { "mode": "raw", "raw": "{\n  \"lecteur_id\": 1,\n  \"livre_id\": 1,\n  \"date_retour_prevue\": \"2026-07-15\"\n}" } } },
+        { "name": "Lister tous les emprunts", "request": { "method": "GET", "url": "{{base}}/api/emprunts" } },
+        { "name": "Emprunts d'un lecteur", "request": { "method": "GET", "url": "{{base}}/api/emprunts/lecteur/1" } },
+        { "name": "Lecteurs ayant emprunté un livre", "request": { "method": "GET", "url": "{{base}}/api/emprunts/livre/1/lecteurs" } },
+        { "name": "Retourner un emprunt", "request": { "method": "PATCH", "url": "{{base}}/api/emprunts/1/retour" } }
+      ]
+    }
+  ]
+}
