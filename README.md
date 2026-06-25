@@ -40,10 +40,14 @@ biblio-api/
 │   │   └── validate.js          # Validation générique par schéma
 │   ├── validators/schemas.js   # Schémas de validation
 │   └── app.js                  # Configuration Express
+├── frontend/                   # App React (Vite + Tailwind) — interface CRUD
+│   └── src/
+│       ├── api.js              # Client fetch vers /api
+│       ├── App.jsx             # Onglets Livres / Lecteurs / Emprunts
+│       └── components/         # UI + sections CRUD
 ├── netlify/functions/api.js    # Wrapper serverless (Express -> Netlify Function)
-├── public/index.html           # Page de doc servie à la racine
-├── netlify.toml                # Config Netlify (functions + redirections)
-├── server.js                   # Point d'entrée (dev local)
+├── netlify.toml                # Config Netlify (build front + functions + redirections)
+├── server.js                   # Point d'entrée API (dev local)
 ├── seed.js                     # Données de test
 └── package.json
 ```
@@ -94,7 +98,26 @@ L'API tourne en **Netlify Function** (Express enveloppé par `serverless-http`) 
    ```
    (Le schéma se crée aussi tout seul à la première requête ; le seed n'ajoute que les données de démo.)
 
-Une fois déployé : API sous `https://<votre-site>.netlify.app/api`, page de doc à la racine `/`.
+Une fois déployé : interface React à la racine `/`, API sous `https://<votre-site>.netlify.app/api`.
+
+---
+
+## 3 ter. Frontend React (Vite + Tailwind)
+
+Interface de gestion (onglets **Livres / Lecteurs / Emprunts**) qui consomme l'API.
+En production, elle est servie à la racine sur le même domaine que l'API (donc **pas de CORS**).
+
+```bash
+# Terminal 1 : l'API (port 3000)
+npm start
+
+# Terminal 2 : le frontend en dev (port 5173, proxy /api -> :3000)
+cd frontend
+npm install
+npm run dev
+```
+
+Le build de production (`frontend/dist`) est généré automatiquement par Netlify (voir `netlify.toml`).
 
 ---
 
