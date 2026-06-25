@@ -1,6 +1,9 @@
+# Build : installe et compile le frontend React (Vite).
+# Netlify lance d'abord `npm install` a la racine (deps de la fonction serverless),
+# puis cette commande pour le front.
 [build]
-  # Dossier statique servi a la racine (page de doc), API geree par les functions.
-  publish = "public"
+  command = "npm install --prefix frontend && npm run build --prefix frontend"
+  publish = "frontend/dist"
   functions = "netlify/functions"
 
 [functions]
@@ -8,9 +11,15 @@
   # libSQL embarque un binaire natif : on le copie tel quel au lieu de le bundler.
   external_node_modules = ["@libsql/client", "libsql"]
 
-# Toutes les requetes /api/* sont servies par la fonction `api` (Express),
-# en conservant le chemin d'origine (status 200 = rewrite interne).
+# 1) Les requetes /api/* sont servies par la fonction `api` (Express),
+#    en conservant le chemin d'origine (status 200 = rewrite interne).
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
+  status = 200
+
+# 2) Tout le reste retombe sur l'app React (SPA).
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
   status = 200
