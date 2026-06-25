@@ -1,4 +1,5 @@
 import { Icon } from './icons.jsx';
+import { getSession } from '../auth.js';
 
 const NAV = [
   { key: 'dashboard', label: 'Tableau de bord', icon: Icon.Dashboard },
@@ -7,7 +8,8 @@ const NAV = [
   { key: 'emprunts', label: 'Emprunts', icon: Icon.Swap },
 ];
 
-export default function Sidebar({ page, setPage, open, onClose }) {
+export default function Sidebar({ page, setPage, open, onClose, onLogout }) {
+  const session = getSession();
   return (
     <>
       {/* Fond sombre sur mobile quand le menu est ouvert */}
@@ -51,12 +53,21 @@ export default function Sidebar({ page, setPage, open, onClose }) {
           })}
         </nav>
 
-        <div className="border-t border-white/10 px-5 py-4 text-xs text-white/50">
-          <div className="flex items-center gap-2">
+        <div className="space-y-3 border-t border-white/10 px-3 py-4">
+          <div className="flex items-center gap-2 px-2 text-xs text-white/50">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
             Base Turso · en ligne
           </div>
-          <div className="mt-1">API REST · Express · Netlify</div>
+          <div className="px-2 text-xs text-white/50">
+            Connecté · <span className="font-medium text-white/80">{session?.username}</span>
+          </div>
+          <button
+            onClick={onLogout}
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-white/70 transition-colors hover:bg-white/5 hover:text-white"
+          >
+            <Icon.Logout size={16} />
+            Se déconnecter
+          </button>
         </div>
       </aside>
     </>
